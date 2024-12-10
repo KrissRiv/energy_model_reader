@@ -1,12 +1,17 @@
+import os
 import pickle
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 import pandas as pd
 
-# Load the saved model
-model_rf = 'best_model_rf.pkl'  # Replace with the actual filename
-model_gr = 'best_model_gr.pkl'  # Replace with the actual filename
+# Correct file paths
+model_rf_path = os.path.join(os.path.dirname(__file__), '..', 'models', 'best_model_rf.pkl')
+model_gr_path = os.path.join(os.path.dirname(__file__), '..', 'models', 'best_model_gr.pkl')
 
 app = Flask(__name__)
+
+@app.route('/')
+def serve_index():
+    return send_from_directory('../static', 'index.html')
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -20,7 +25,17 @@ def predict():
             return jsonify({'error': 'Missing required features'}), 400
         
         modelo = data['model']
-        loaded_model = pickle.load(open(modelo, 'rb'))
+        if modelo == 'best_model_rf':
+            model_path = model_rf_path
+        elif modelo == 'best_model_gr':
+            model_path = model_gr_path
+        else:
+            return jsonify({'error': 'Invalid model selected'}), 400
+        
+        data.pop('model', None)
+
+        with open(model_path, 'rb') as f:
+            loaded_model = pickle.load(f)
 
         # Create a DataFrame from the input data
         input_df = pd.DataFrame([data])
@@ -35,4 +50,4 @@ def predict():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=3000)
+    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 443)))
