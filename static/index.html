@@ -4,57 +4,110 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Predicción de PIB</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-      }
-      label,
-      input,
-      select {
-        display: block;
-        margin-bottom: 10px;
-      }
-    </style>
+    <!-- Incluyendo Tailwind CSS desde un CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body>
-    <h1>Predicción de PIB basado en Consumo Energético</h1>
+  <body class="bg-gray-100 p-6">
+    <h1 class="text-2xl font-bold mb-4">
+      Predicción de PIB basado en Consumo Energético
+    </h1>
 
-    <form id="prediction-form">
-      <label for="coal">Consumo de Carbón:</label>
-      <input type="number" id="coal" name="coal_consumption" required />
+    <form id="prediction-form" class="bg-white p-6 rounded shadow-md">
+      <div class="mb-4">
+        <label for="coal" class="block font-semibold">Consumo de Carbón:</label>
+        <input
+          type="number"
+          id="coal"
+          name="coal_consumption"
+          required
+          class="w-full p-2 border border-gray-300 rounded"
+        />
+      </div>
 
-      <label for="gas">Consumo de Gas:</label>
-      <input type="number" id="gas" name="gas_consumption" required />
+      <div class="mb-4">
+        <label for="gas" class="block font-semibold">Consumo de Gas:</label>
+        <input
+          type="number"
+          id="gas"
+          name="gas_consumption"
+          required
+          class="w-full p-2 border border-gray-300 rounded"
+        />
+      </div>
 
-      <label for="hydro">Consumo de Hidroeléctrico:</label>
-      <input type="number" id="hydro" name="hydro_consumption" required />
+      <div class="mb-4">
+        <label for="hydro" class="block font-semibold"
+          >Consumo de Hidroeléctrico:</label
+        >
+        <input
+          type="number"
+          id="hydro"
+          name="hydro_consumption"
+          required
+          class="w-full p-2 border border-gray-300 rounded"
+        />
+      </div>
 
-      <label for="renewables">Consumo de Energías Renovables:</label>
-      <input
-        type="number"
-        id="renewables"
-        name="renewables_consumption"
-        required
-      />
+      <div class="mb-4">
+        <label for="renewables" class="block font-semibold"
+          >Consumo de Energías Renovables:</label
+        >
+        <input
+          type="number"
+          id="renewables"
+          name="renewables_consumption"
+          required
+          class="w-full p-2 border border-gray-300 rounded"
+        />
+      </div>
 
-      <label for="solar">Consumo de Solar:</label>
-      <input type="number" id="solar" name="solar_consumption" required />
+      <div class="mb-4">
+        <label for="solar" class="block font-semibold">Consumo de Solar:</label>
+        <input
+          type="number"
+          id="solar"
+          name="solar_consumption"
+          required
+          class="w-full p-2 border border-gray-300 rounded"
+        />
+      </div>
 
-      <label for="wind">Consumo de Eólica:</label>
-      <input type="number" id="wind" name="wind_consumption" required />
+      <div class="mb-4">
+        <label for="wind" class="block font-semibold">Consumo de Eólica:</label>
+        <input
+          type="number"
+          id="wind"
+          name="wind_consumption"
+          required
+          class="w-full p-2 border border-gray-300 rounded"
+        />
+      </div>
 
-      <label for="model">Selecciona el Modelo:</label>
-      <select id="model" name="model" required>
-        <option value="best_model_rf">Random Forest</option>
-        <option value="best_model_gr">Gradient Boosting</option>
-      </select>
+      <div class="mb-4">
+        <label for="model" class="block font-semibold"
+          >Selecciona el Modelo:</label
+        >
+        <select
+          id="model"
+          name="model"
+          required
+          class="w-full p-2 border border-gray-300 rounded"
+        >
+          <option value="best_model_rf">Random Forest</option>
+          <option value="best_model_gr">Gradient Boosting</option>
+        </select>
+      </div>
 
-      <button type="submit">Predecir PIB</button>
+      <button
+        type="submit"
+        class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+      >
+        Predecir PIB
+      </button>
     </form>
 
-    <h2>Resultado de la Predicción:</h2>
-    <p id="result"></p>
+    <h2 class="text-xl font-semibold mt-6">Resultado de la Predicción:</h2>
+    <p id="result" class="text-lg mt-2"></p>
 
     <script>
       document
