@@ -113,8 +113,21 @@
         </button>
       </form>
 
-      <h2 class="text-xl font-semibold mt-6">Resultado de la Predicción:</h2>
-      <p id="result" class="text-lg mt-2"></p>
+      <div
+        id="resultModal"
+        class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center"
+      >
+        <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm">
+          <h2 class="text-xl font-semibold mb-2">Resultado de la Predicción</h2>
+          <p id="result" class="text-lg mb-4"></p>
+          <button
+            id="closeModal"
+            class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+          >
+            Cerrar
+          </button>
+        </div>
+      </div>
     </main>
 
     <script>
@@ -159,15 +172,24 @@
               document.getElementById(
                 "result"
               ).textContent = `PIB Predicho: ${result.prediction[0]}`;
+              // Mostrar el modal
+              document.getElementById("resultModal").classList.remove("hidden");
             } else {
               document.getElementById("result").textContent =
                 "No se pudo obtener la predicción";
+              document.getElementById("resultModal").classList.remove("hidden");
             }
           } catch (error) {
             document.getElementById(
               "result"
             ).textContent = `Error: ${error.message}`;
+            document.getElementById("resultModal").classList.remove("hidden");
           }
+        });
+      document
+        .getElementById("closeModal")
+        .addEventListener("click", function () {
+          document.getElementById("resultModal").classList.add("hidden");
         });
     </script>
   </body>
