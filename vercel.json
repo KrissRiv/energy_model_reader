@@ -13,5 +13,8 @@
   "routes": [
     { "src": "/api/(.*)", "dest": "api/app.py" },
     { "src": "/(.*)", "dest": "static/index.html" }
-  ]
+  ],
+  "engines": {
+    "python": "3.13.1"
+  }
 }
