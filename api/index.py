@@ -1,6 +1,6 @@
 import os
 import pickle
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 import pandas as pd
 
 # Correct file paths
@@ -8,6 +8,10 @@ model_rf_path = os.path.join(os.path.dirname(__file__), '..', 'models', 'best_mo
 model_gr_path = os.path.join(os.path.dirname(__file__), '..', 'models', 'best_model_gr.pkl')
 
 app = Flask(__name__)
+
+@app.route('/')
+def serve_index():
+    return send_from_directory('../static', 'index.html')
 
 @app.route('/predict', methods=['POST'])
 def predict():
