@@ -1,25 +1,28 @@
 import pickle
 from flask import Flask, request, jsonify
+import pandas as pd
 
 # Load the saved model
-filename = 'best_model_rf.pkl'  # Replace with the actual filename
-loaded_model = pickle.load(open(filename, 'rb'))
+model_rf = 'best_model_rf.pkl'  # Replace with the actual filename
+model_gr = 'best_model_gr.pkl'  # Replace with the actual filename
 
 app = Flask(__name__)
 
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        # Get data from the request
+
         data = request.get_json()
 
         # Check if the necessary features are present
-        required_features = ['coal_consumption', 'gas_consumption', 'nuclear_consumption', 'oil_consumption', 'renewables_consumption']
+        required_features = ['coal_consumption', 'gas_consumption', 'hydro_consumption', 'renewables_consumption', 'solar_consumption', 'wind_consumption']
         if not all(feature in data for feature in required_features):
             return jsonify({'error': 'Missing required features'}), 400
+        
+        modelo = data['model']
+        loaded_model = pickle.load(open(modelo, 'rb'))
 
         # Create a DataFrame from the input data
-        import pandas as pd
         input_df = pd.DataFrame([data])
 
         # Make predictions
@@ -32,4 +35,4 @@ def predict():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=3000)

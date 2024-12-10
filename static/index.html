@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Predicción de PIB</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      label,
+      input,
+      select {
+        display: block;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Predicción de PIB basado en Consumo Energético</h1>
+
+    <form id="prediction-form">
+      <label for="coal">Consumo de Carbón:</label>
+      <input type="number" id="coal" name="coal_consumption" required />
+
+      <label for="gas">Consumo de Gas:</label>
+      <input type="number" id="gas" name="gas_consumption" required />
+
+      <label for="hydro">Consumo de Hidroeléctrico:</label>
+      <input type="number" id="hydro" name="hydro_consumption" required />
+
+      <label for="renewables">Consumo de Energías Renovables:</label>
+      <input
+        type="number"
+        id="renewables"
+        name="renewables_consumption"
+        required
+      />
+
+      <label for="solar">Consumo de Solar:</label>
+      <input type="number" id="solar" name="solar_consumption" required />
+
+      <label for="wind">Consumo de Eólica:</label>
+      <input type="number" id="wind" name="wind_consumption" required />
+
+      <label for="model">Selecciona el Modelo:</label>
+      <select id="model" name="model" required>
+        <option value="best_model_rf">Random Forest</option>
+        <option value="best_model_gr">Gradient Boosting</option>
+      </select>
+
+      <button type="submit">Predecir PIB</button>
+    </form>
+
+    <h2>Resultado de la Predicción:</h2>
+    <p id="result"></p>
+
+    <script>
+      document
+        .getElementById("prediction-form")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault(); // Evitar el envío del formulario
+
+          const coal = document.getElementById("coal").value;
+          const gas = document.getElementById("gas").value;
+          const hydro = document.getElementById("hydro").value;
+          const renewables = document.getElementById("renewables").value;
+          const solar = document.getElementById("solar").value;
+          const wind = document.getElementById("wind").value;
+          const model = document.getElementById("model").value;
+
+          const data = {
+            coal_consumption: parseFloat(coal),
+            gas_consumption: parseFloat(gas),
+            hydro_consumption: parseFloat(hydro),
+            renewables_consumption: parseFloat(renewables),
+            solar_consumption: parseFloat(solar),
+            wind_consumption: parseFloat(wind),
+            model: model,
+          };
+
+          try {
+            const response = await fetch("http://127.0.0.1:5000/predict", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+              throw new Error("Error en la respuesta del servidor");
+            }
+
+            const result = await response.json();
+            if (result.prediction) {
+              document.getElementById(
+                "result"
+              ).textContent = `PIB Predicho: ${result.prediction[0]}`;
+            } else {
+              document.getElementById("result").textContent =
+                "No se pudo obtener la predicción";
+            }
+          } catch (error) {
+            document.getElementById(
+              "result"
+            ).textContent = `Error: ${error.message}`;
+          }
+        });
+    </script>
+  </body>
+</html>
