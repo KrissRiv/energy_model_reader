@@ -19,7 +19,6 @@ def predict_gdp(coal_consumption, gas_consumption, oil_consumption, renewables_c
 
     url = 'http://127.0.0.1:5000/predict' # Replace with your API endpoint
     data = {
-        'gdp': 100,
         'coal_consumption': coal_consumption,
         'gas_consumption': gas_consumption,
         'nuclear_consumption': nuclear_consumption,
@@ -30,10 +29,7 @@ def predict_gdp(coal_consumption, gas_consumption, oil_consumption, renewables_c
     headers = {'Content-Type': 'application/json'}
 
     try:
-        print(f"json.dumps(data) {json.dumps(data)}")
-        print(f"request: {requests.post(url, data=json.dumps(data), headers=headers)}")
         response = requests.post(url, data=json.dumps(data), headers=headers)
-        print(f"Response {response}")
         response.raise_for_status()  # Raise an exception for bad status codes (4xx or 5xx)
 
         result = response.json()
