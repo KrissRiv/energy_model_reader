@@ -32,19 +32,25 @@ def predict():
         else:
             return jsonify({'error': 'Invalid model selected'}), 400
         
+        data.pop('model', None)
+        
         with open(model_path, 'rb') as f:
             loaded_model = pickle.load(f)
+        print(f"loaded_model: {loaded_model}")
 
         # Create a DataFrame from the input data
         input_df = pd.DataFrame([data])
+        print(f"input_df: {input_df}")
 
         # Make predictions
         prediction = loaded_model.predict(input_df)
+        print(f"prediction: {prediction}")
 
         # Return the prediction
         return jsonify({'prediction': prediction.tolist()})
 
     except Exception as e:
+        print(f"error: {e}")
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
