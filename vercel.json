@@ -1,4 +1,7 @@
 {
+  "github": {
+    "autoJobCancelation": false
+  },
   "version": 2,
   "routes": [
     { "src": "/predict", "dest": "api/index.py" },
