@@ -1,37 +1,41 @@
-from flask import Flask, request, jsonify
 import pickle
-import numpy as np
+from flask import Flask, request, jsonify
+
+# Load the saved model
+filename = 'best_model_rf.pkl'  # Replace with the actual filename
+loaded_model = pickle.load(open(filename, 'rb'))
 
 app = Flask(__name__)
 
-# Cargar el modelo desde un archivo pickle
-def load_model():
-    with open('sa_energy_model.pkl', 'rb') as model_file:
-        model = pickle.load(model_file)
-    return model
-
-model = load_model()
-
-@app.route('/')
-def home():
-    return "Bienvenido a la API de Consumo Energético de Sudamérica"
-
 @app.route('/predict', methods=['POST'])
 def predict():
-    # Esperamos un JSON con los datos de entrada para la predicción
-    data = request.json
     try:
-        # Supongamos que el modelo espera tres características de entrada
-        features = data['features']  # por ejemplo, [feature1, feature2, feature3]
-        features_array = np.array(features).reshape(1, -1)  # Convertir a un array numpy
+        # Get data from the request
+        data = request.get_json()
+        print(f"Data: {data}")
 
-        # Realizar la predicción
-        prediction = model.predict(features_array)
+        # Check if the necessary features are present
+        required_features = ['coal_consumption', 'gas_consumption', 'nuclear_consumption', 'oil_consumption', 'renewables_consumption']
+        print(f" Required: {required_features}")
+        if not all(feature in data for feature in required_features):
+            print("error")
+            return jsonify({'error': 'Missing required features'}), 400
 
+        # Create a DataFrame from the input data
+        import pandas as pd
+        input_df = pd.DataFrame([data])
+        print(f"Input_df {input_df}")
+
+        # Make predictions
+        print(f"loaded_model {loaded_model}")
+        prediction = loaded_model.predict(input_df)
+
+        # Return the prediction
         return jsonify({'prediction': prediction.tolist()})
-    
+
     except Exception as e:
-        return jsonify({'error': str(e)})
+        print(f"Error: {e}")
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
