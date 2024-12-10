@@ -1,36 +1,58 @@
 import requests
+import json
 
-def get_prediction(features):
-    # URL de la API de Flask
-    api_url = "http://127.0.0.1:5000/predict"
-    
-    # Datos a enviar en formato JSON
-    data = {"features": features}
+def predict_gdp(coal_consumption, gas_consumption, oil_consumption, renewables_consumption, nuclear_consumption):
+    """
+    Sends a POST request to the Flask API to predict GDP based on energy consumption data.
+
+    Args:
+        coal_consumption: Amount of coal consumption.
+        gas_consumption: Amount of gas consumption.
+        oil_consumption: Amount of oil consumption.
+        renewables_consumption: Amount of renewable energy consumption.
+        nuclear_consumption: Amount of nuclear energy consumption.
+
+
+    Returns:
+        The predicted GDP value as a float, or None if an error occurs.
+    """
+
+    url = 'http://127.0.0.1:5000/predict' # Replace with your API endpoint
+    data = {
+        'gdp': 100,
+        'coal_consumption': coal_consumption,
+        'gas_consumption': gas_consumption,
+        'nuclear_consumption': nuclear_consumption,
+        'oil_consumption': oil_consumption,
+        'renewables_consumption': renewables_consumption,
+    }
+
+    headers = {'Content-Type': 'application/json'}
 
     try:
-        # Hacemos una solicitud POST a la API con los datos
-        response = requests.post(api_url, json=data)
+        print(f"json.dumps(data) {json.dumps(data)}")
+        print(f"request: {requests.post(url, data=json.dumps(data), headers=headers)}")
+        response = requests.post(url, data=json.dumps(data), headers=headers)
+        print(f"Response {response}")
+        response.raise_for_status()  # Raise an exception for bad status codes (4xx or 5xx)
 
-        # Revisamos si la solicitud fue exitosa
-        if response.status_code == 200:
-            # Imprimir la respuesta de la API
-            prediction = response.json().get('prediction')
-            if prediction is not None:
-                print(f"Predicción recibida: {prediction}")
-            else:
-                print("Respuesta inesperada, no se encontró una predicción.")
+        result = response.json()
+        if 'prediction' in result:
+            return result['prediction'][0]  # Assuming a single prediction
+        elif 'error' in result:
+            print(f"API Error: {result['error']}")
+            return None
         else:
-            print(f"Solicitud fallida con estatus: {response.status_code}")
-            print(f"Mensaje de error: {response.json().get('error')}")
+            print("API returned an unexpected response.")
+            return None
 
     except requests.exceptions.RequestException as e:
-        # En caso de excepción al realizar la solicitud
-        print(f"Error al conectar con la API: {e}")
+        print(f"Error connecting to the API: {e}")
+        return None
 
-if __name__ == "__main__":
-    # Ejemplo de características de entrada para la predicción
-    # Asegúrate de que estas características coincidan con lo que espera tu modelo
-    example_features = [100, 50, 75, 25, 100]  # Reemplaza con las características reales
 
-    # Llamar a la función para obtener la predicción
-    get_prediction(example_features)
+# Example usage:
+predicted_gdp = predict_gdp(coal_consumption=100, gas_consumption=200, oil_consumption=150, renewables_consumption=50, nuclear_consumption=25)
+
+if predicted_gdp is not None:
+    print(f"Predicted GDP: {predicted_gdp}")
